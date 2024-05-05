@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\src\PricePush.Domain.Shared\PricePush.Domain.Shared.csproj" />
     <ProjectReference Include="..\src\PricePush.Domain\PricePush.Domain.csproj" />
   </ItemGroup>
 

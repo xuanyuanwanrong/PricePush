@@ -1,6 +1,9 @@
-﻿using Hangfire;
+﻿using Autofac.Core;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PricePush.BackgroundJobs.Telegram;
 using System;
 
 namespace PricePush.Web
@@ -9,8 +12,12 @@ namespace PricePush.Web
     {
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var configuration = services.GetConfiguration();
             services.AddApplication<PricePushWebModule>();
-            services.AddHangfire(r => r.UseSqlServerStorage("Server=101.43.44.78;Database=pricePush;User Id=pricePush;Password=zA(V6Quk%u)aE8ZR9;"));
+            services.AddHangfire(r => r.UseSqlServerStorage(configuration.GetConnectionString("Default")));
+            services.AddHangfireServer();
+
         }
 
         public void Configure(IApplicationBuilder app)
@@ -18,7 +25,10 @@ namespace PricePush.Web
             app.InitializeApplication();
 
             app.UseHangfireDashboard(); //打开仪表盘
-        
+            BackgroundJob.Enqueue<TelegramBotMonitorJob>(x => x.Execute(new TelegramBotMonitorJobArgs
+            {
+                BotId = 0
+            }));
         }
     }
 }
