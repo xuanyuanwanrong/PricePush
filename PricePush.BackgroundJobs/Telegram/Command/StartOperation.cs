@@ -10,8 +10,12 @@ using Telegram.Bot.Types;
 
 namespace PricePush.BackgroundJobs.Telegram.Command
 {
-    public class StartOperation : BaseOpertaion
+    [CommandName("/start")]
+    public class StartOperation : IOperationHandler
     {
-      
+        public async Task HandleOperation(ITelegramBotClient botClient, Update update)
+        {
+            await botClient.SendTextMessageAsync(update.Message.Chat.Id, "执行了/start操作");
+        }
     }
 }

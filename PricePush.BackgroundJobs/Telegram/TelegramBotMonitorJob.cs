@@ -1,11 +1,15 @@
-﻿using System;
+﻿using IdentityServer4.Models;
+using PricePush.BackgroundJobs.Telegram.Command.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
+using Telegram.Bot.Requests;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Volo.Abp.BackgroundJobs;
@@ -53,9 +57,19 @@ namespace PricePush.BackgroundJobs.Telegram
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
 
+            IOperationHandler handler = OperationFactory.GetOperationHandler(update.Message.Text);
+            await handler.HandleOperation(botClient, update);
 
         }
 
+        //string GetCommand(Message msg)
+        //{
+        //    if (string.IsNullOrWhiteSpace(msg.Text))
+        //    {
+        //        return string.Empty;
+        //    }
+
+        //}
     }
 
     public class TelegramBotMonitorJobArgs
