@@ -1,4 +1,6 @@
-﻿using PricePush.BackgroundJobs.Telegram.Command.Base;
+﻿using Microsoft.VisualBasic;
+using PricePush.CustomAttribute;
+using PricePush.Factory.TelegramBot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,12 +12,16 @@ using Telegram.Bot.Types;
 
 namespace PricePush.BackgroundJobs.Telegram.Command
 {
-    [CommandName("/start")]
-    public class StartOperation : IOperationHandler
+    [CommandAttribute("/start")]
+    public class StartOperation : ITelegramBotOperation
     {
-        public async Task HandleOperation(ITelegramBotClient botClient, Update update)
+        public Update Update => throw new NotImplementedException();
+
+        public long BotId => throw new NotImplementedException();
+
+        public async Task Execute()
         {
-            await botClient.SendTextMessageAsync(update.Message.Chat.Id, "执行了/start操作");
+            //await botClient.SendTextMessageAsync(update.Message.Chat.Id, "执行了/start操作");
         }
     }
 }

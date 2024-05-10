@@ -1,5 +1,6 @@
 ﻿using IdentityServer4.Models;
-using PricePush.BackgroundJobs.Telegram.Command.Base;
+using PricePush.Database;
+using PricePush.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,16 +21,22 @@ namespace PricePush.BackgroundJobs.Telegram
     {
         public void Execute(TelegramBotMonitorJobArgs args)
         {
-            StartReceiving().GetAwaiter().GetResult();
+            var token = LoadAuthToken(args.BotId);
+            StartReceiving(token).GetAwaiter().GetResult();
         }
-        async Task StartReceiving()
+        async Task StartReceiving(string token)
         {
             ReceiverOptions receiverOptions = new()
             {
                 AllowedUpdates = Array.Empty<UpdateType>()
             };
             using CancellationTokenSource cts = new();
-            var botClient = new TelegramBotClient("7144607718:AAHz-2YrjZxTnlQjMnFe8q9YGslREFquxzo");
+
+ 
+            //var botClient = new TelegramBotClient("7144607718:AAHz-2YrjZxTnlQjMnFe8q9YGslREFquxzo");
+            var botClient = new TelegramBotClient(token);
+
+
 
             var me = await botClient.GetMeAsync();
 
@@ -40,6 +47,16 @@ namespace PricePush.BackgroundJobs.Telegram
                 cancellationToken: cts.Token
             );
 
+        }
+
+        string LoadAuthToken(long botId)
+        {
+            var bot = Sqlsugar.Database.Queryable<TgBot>().First(t => t.BotID == botId);
+            if (bot == null)
+            {
+                throw new Exception("机器人不存在");
+            }
+            return bot.AuthToken;
         }
         Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
@@ -57,8 +74,6 @@ namespace PricePush.BackgroundJobs.Telegram
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
 
-            IOperationHandler handler = OperationFactory.GetOperationHandler(update.Message.Text);
-            await handler.HandleOperation(botClient, update);
 
         }
 

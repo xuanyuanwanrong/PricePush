@@ -10,6 +10,7 @@ namespace PricePush.Model
 {
     public class TgBot : Entity<int>, IHasCreationTime
     {
+        public long BotID { get; set; }
         /// <summary>
         /// name
         /// </summary>
