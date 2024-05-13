@@ -1,6 +1,6 @@
 ﻿using IdentityServer4.Models;
 using PricePush.Database;
-using PricePush.Model;
+using PricePush.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

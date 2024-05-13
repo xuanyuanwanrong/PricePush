@@ -8,6 +8,7 @@ using PricePush.BackgroundJobs.Telegram;
 using PricePush.Database;
 using PricePush.Dtos.Appsetting;
 using PricePush.Helpr.Cache;
+using PricePush.Entities;
 using System;
 using System.Configuration;
 
@@ -33,6 +34,8 @@ namespace PricePush.Web
             new RedisCache($"{redis.Value.Server}:{redis.Value.Port}", redis.Value.Database);
 
             new Sqlsugar(database.Value.Default);
+            //var test = Sqlsugar.Database.Queryable<TgBot>().ToList();
+
             app.InitializeApplication();
 
             app.UseHangfireDashboard(); //打开仪表盘

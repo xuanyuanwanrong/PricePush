@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PricePush.Model;
+using PricePush.Entities;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;

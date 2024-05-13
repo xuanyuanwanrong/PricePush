@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,14 @@ using System.Threading.Tasks;
 using Volo.Abp.Auditing;
 using Volo.Abp.Domain.Entities;
 
-namespace PricePush.Model
+namespace PricePush.Entities
 {
     public class TgBot : Entity<int>, IHasCreationTime
     {
+
+        [SugarColumn(IsPrimaryKey = true)]
+        public override int Id { get; protected set; }
+
         public long BotID { get; set; }
         /// <summary>
         /// name
