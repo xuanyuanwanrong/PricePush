@@ -9,7 +9,7 @@ namespace PricePush.Factory.TelegramBot
 {
     public class TelegramBotOperationFactory
     {
-        public Dictionary<string, Func<ITelegramBotOperation>> _operations = new Dictionary<string, Func<ITelegramBotOperation>>();
+        public static Dictionary<string, Func<ITelegramBotOperation>> _operations = new Dictionary<string, Func<ITelegramBotOperation>>();
 
         public TelegramBotOperationFactory()
         {
@@ -36,7 +36,7 @@ namespace PricePush.Factory.TelegramBot
         {
             _operations[command] = operation;
         }
-        public ITelegramBotOperation FindOperation(string command)
+        public static ITelegramBotOperation FindOperation(string command)
         {
             if (_operations.ContainsKey(command))
             {

@@ -34,14 +34,13 @@ namespace PricePush.Web
             new RedisCache($"{redis.Value.Server}:{redis.Value.Port}", redis.Value.Database);
 
             new Sqlsugar(database.Value.Default);
-            //var test = Sqlsugar.Database.Queryable<TgBot>().ToList();
 
             app.InitializeApplication();
 
             app.UseHangfireDashboard(); //打开仪表盘
             BackgroundJob.Enqueue<TelegramBotMonitorJob>(x => x.Execute(new TelegramBotMonitorJobArgs
             {
-                BotId = 0
+                BotId = 7144607718
             }));
 
         }

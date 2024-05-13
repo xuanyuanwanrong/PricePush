@@ -1,6 +1,7 @@
 ﻿using IdentityServer4.Models;
 using PricePush.Database;
 using PricePush.Entities;
+using PricePush.Factory.TelegramBot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,11 +33,7 @@ namespace PricePush.BackgroundJobs.Telegram
             };
             using CancellationTokenSource cts = new();
 
- 
-            //var botClient = new TelegramBotClient("7144607718:AAHz-2YrjZxTnlQjMnFe8q9YGslREFquxzo");
             var botClient = new TelegramBotClient(token);
-
-
 
             var me = await botClient.GetMeAsync();
 
@@ -51,7 +48,7 @@ namespace PricePush.BackgroundJobs.Telegram
 
         string LoadAuthToken(long botId)
         {
-            var bot = Sqlsugar.Database.Queryable<TgBot>().First(t => t.BotID == botId);
+            var bot = Sqlsugar.Database.Queryable<TgBot>().First(t => t.BotID == botId && t.IsEnable);
             if (bot == null)
             {
                 throw new Exception("机器人不存在");
@@ -73,18 +70,68 @@ namespace PricePush.BackgroundJobs.Telegram
 
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+            var msg = GetMessage(update);
+            if (msg is null)
+            {
+                return;
+            }
+            var command = GetCommand(msg);
 
+            var factory = TelegramBotOperationFactory.FindOperation(command);
 
+            await factory.Execute();
         }
 
-        //string GetCommand(Message msg)
-        //{
-        //    if (string.IsNullOrWhiteSpace(msg.Text))
-        //    {
-        //        return string.Empty;
-        //    }
+        string GetCommand(Message msg)
+        {
 
-        //}
+            if (msg.Text is not { } messageText)
+            { return ""; }
+            if (msg.Entities == null) { return ""; }
+            var action = msg.Entities.FirstOrDefault(p => p.Type == MessageEntityType.BotCommand);
+            if (action == null) { return ""; }
+            return msg.Text.Substring(action.Offset, action.Length);
+        }
+        Message? GetMessage(Update update)
+        {
+            Message? message = null;
+            switch (update.Type)
+            {
+                case UpdateType.Message:
+                    message = update.Message;
+                    break;
+                case UpdateType.InlineQuery:
+                    break;
+                case UpdateType.ChosenInlineResult:
+                    break;
+                case UpdateType.CallbackQuery:
+                    break;
+                case UpdateType.EditedMessage:
+                    break;
+                case UpdateType.ChannelPost:
+                    break;
+                case UpdateType.EditedChannelPost:
+                    break;
+                case UpdateType.ShippingQuery:
+                    break;
+                case UpdateType.PreCheckoutQuery:
+                    break;
+                case UpdateType.Poll:
+                    break;
+                case UpdateType.PollAnswer:
+                    break;
+                case UpdateType.MyChatMember:
+                    break;
+                case UpdateType.ChatMember:
+                    break;
+                case UpdateType.ChatJoinRequest:
+                    break;
+                case UpdateType.Unknown:
+                default:
+                    break;
+            }
+            return message;
+        }
     }
 
     public class TelegramBotMonitorJobArgs

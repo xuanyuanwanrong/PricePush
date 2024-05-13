@@ -12,7 +12,7 @@ namespace PricePush.Entities
     public class TgBot : Entity<int>, IHasCreationTime
     {
 
-        [SugarColumn(IsPrimaryKey = true)]
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public override int Id { get; protected set; }
 
         public long BotID { get; set; }
